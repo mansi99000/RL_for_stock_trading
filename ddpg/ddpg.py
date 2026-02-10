@@ -1,3 +1,12 @@
+"""
+Deep Deterministic Policy Gradient (DDPG) agent.
+
+An off-policy actor-critic algorithm for continuous action spaces. Uses
+experience replay, target networks with Polyak averaging, and Gaussian
+exploration noise for stable training.
+"""
+
+import os
 from dataclasses import dataclass
 
 import numpy as np
@@ -141,35 +150,27 @@ class DDPG:
     def load(self, log_dir):
         self.actor.load_state_dict(
             torch.load(
-                os.path.join(
-                    log_dir, "actor.pth", map_location=torch.device("cpu")
-                )
+                os.path.join(log_dir, "actor.pth"),
+                map_location=torch.device("cpu"),
             )
         )
         self.actor_target.load_state_dict(
             torch.load(
-                os.path.join(
-                    log_dir,
-                    "actor_target.pth",
-                    map_location=torch.device("cpu"),
-                )
+                os.path.join(log_dir, "actor_target.pth"),
+                map_location=torch.device("cpu"),
             )
         )
 
         self.critic.load_state_dict(
             torch.load(
-                os.path.join(
-                    log_dir, "critic.pth", map_location=torch.device("cpu")
-                )
+                os.path.join(log_dir, "critic.pth"),
+                map_location=torch.device("cpu"),
             )
         )
         self.critic_target.load_state_dict(
             torch.load(
-                os.path.join(
-                    log_dir,
-                    "critic_target.pth",
-                    map_location=torch.device("cpu"),
-                )
+                os.path.join(log_dir, "critic_target.pth"),
+                map_location=torch.device("cpu"),
             )
         )
 

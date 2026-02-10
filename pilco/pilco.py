@@ -1,4 +1,12 @@
-import GPy  # Install with `pip install GPy`
+"""
+PILCO (Probabilistic Inference for Learning Control) implementation.
+
+A model-based RL algorithm that uses Gaussian Process regression to learn
+environment dynamics and optimizes a parametric policy by minimizing
+expected cost over predicted trajectories.
+"""
+
+import GPy
 import numpy as np
 from scipy.optimize import minimize
 from tqdm import tqdm

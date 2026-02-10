@@ -1,3 +1,11 @@
+"""
+Advantage Actor-Critic (A2C) implementation for discrete and continuous action spaces.
+
+Supports both standard Gym environments (e.g., CartPole) and a custom
+MultiStockEnv for stock trading. Uses separate Actor and Critic networks
+with TD(0) advantage estimation.
+"""
+
 import os
 
 import gym
@@ -5,7 +13,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torch.distributions import Categorical
+from torch.distributions import Categorical, Normal
 
 
 def save_model(actor, critic, actor_path, critic_path):
@@ -86,21 +94,29 @@ def actor_critic(
         done = False
         step_count = 0
 
+        is_continuous = env.__class__.__name__ == "MultiStockEnv"
+
         while not done and step_count < max_steps:
             state_tensor = torch.FloatTensor(state)
 
             # Actor selects action
-            action_probs = actor(state_tensor)
-            dist = Categorical(action_probs)
-            action = dist.sample()
+            action_output = actor(state_tensor)
 
-            # Take action and observe next state and reward
-            if env.__class__.__name__ == "MultiStockEnv":
+            if is_continuous:
+                # Continuous actions: use Normal distribution around tanh output
+                noise_std = 0.1
+                dist = Normal(action_output, noise_std)
+                action = dist.sample()
                 next_state, reward, done = env.transition(
-                    state, action_probs.detach().numpy()
+                    state, action.detach().numpy()
                 )
+                log_prob = dist.log_prob(action).sum()
             else:
+                # Discrete actions: use Categorical distribution over softmax output
+                dist = Categorical(action_output)
+                action = dist.sample()
                 next_state, reward, done, _, _ = env.step(action.item())
+                log_prob = dist.log_prob(action)
 
             # Critic estimates value function
             value = critic(state_tensor)
@@ -116,8 +132,7 @@ def actor_critic(
             critic_loss.backward()
             optimizer_critic.step()
 
-            # Actor update
-            log_prob = dist.log_prob(action)
+            # Actor update using policy gradient
             actor_loss = -log_prob * advantage.detach()
             optimizer_actor.zero_grad()
             actor_loss.backward()
@@ -259,7 +274,7 @@ def stock_trading():
         if total_reward >= max_steps:
             break
 
-    print(f"Total reward in evaulate mode: {total_reward}")
+    print(f"Total reward in evaluate mode: {total_reward}")
 
 
 if __name__ == "__main__":

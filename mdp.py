@@ -1,3 +1,11 @@
+"""
+Multi-Stock Trading Environment formulated as a Markov Decision Process (MDP).
+
+The agent manages a portfolio of stocks, deciding how many shares to buy/sell
+at each time step. The state includes the current balance, shares owned,
+stock prices, and optional technical indicators (MACD, RSI, CCI, ADX).
+"""
+
 import argparse
 from abc import ABC, abstractmethod
 from typing import Dict
@@ -9,6 +17,8 @@ import helper
 
 
 class MDP(ABC):
+    """Abstract base class for Markov Decision Process environments."""
+
     @abstractmethod
     def initialize(self): ...
 
@@ -95,19 +105,19 @@ class MultiStockEnv(MDP):
 
         if self.args.use_rsi:
             state_vector[
-                (2 + i) * self.n_stock + 1 : (2 + i) * self.n_stock + 1
+                (2 + i) * self.n_stock + 1 : (3 + i) * self.n_stock + 1
             ] = self.rsi[:, self.time_step]
             i += 1
 
         if self.args.use_cci:
             state_vector[
-                (2 + i) * self.n_stock + 1 : (2 + i) * self.n_stock + 1
-            ] = self.ccis[:, self.time_step]
+                (2 + i) * self.n_stock + 1 : (3 + i) * self.n_stock + 1
+            ] = self.cci[:, self.time_step]
             i += 1
 
         if self.args.use_adx:
             state_vector[
-                (2 + i) * self.n_stock + 1 : (2 + i) * self.n_stock + 1
+                (2 + i) * self.n_stock + 1 : (3 + i) * self.n_stock + 1
             ] = self.adx[:, self.time_step]
 
         return state_vector

@@ -1,3 +1,10 @@
+"""
+Technical indicator functions for stock trading feature engineering.
+
+Provides MACD, RSI, CCI, and ADX indicators that can be included in the
+MDP state representation to give the RL agent additional market signals.
+"""
+
 import numpy as np
 import pandas as pd
 
