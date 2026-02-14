@@ -6,7 +6,6 @@ This project implements and compares multiple reinforcement learning algorithms 
 
 - **A2C (Advantage Actor-Critic)** — An on-policy actor-critic method that uses the advantage function to reduce variance in policy gradient updates. (`a2c.py`)
 - **DDPG (Deep Deterministic Policy Gradient)** — An off-policy algorithm for continuous action spaces, using experience replay and target networks for stable training. (`ddpg/`)
-- **PILCO (Probabilistic Inference for Learning Control)** — A model-based RL approach that learns environment dynamics using Gaussian Processes and optimizes a linear policy via trajectory optimization. (`pilco/`)
 
 ## Project Structure
 
@@ -17,8 +16,6 @@ This project implements and compares multiple reinforcement learning algorithms 
 │   ├── networks.py     # Actor and Critic neural network architectures
 │   ├── memory.py       # Experience replay buffer
 │   └── utils.py        # Ornstein-Uhlenbeck noise for exploration
-├── pilco/
-│   └── pilco.py        # PILCO with GP dynamics model and linear policy
 ├── mdp.py              # Multi-stock trading environment (MDP formulation)
 ├── helper.py           # Technical indicators: MACD, RSI, CCI, ADX
 └── requirements.txt    # Python dependencies
@@ -57,15 +54,6 @@ python ddpg.py
 ```
 
 Trains DDPG on the Pendulum-v1 environment as a continuous control benchmark.
-
-### PILCO — Model-Based RL
-
-```bash
-cd pilco
-python pilco.py
-```
-
-Runs PILCO with a synthetic dynamics function, demonstrating GP-based model learning and policy optimization.
 
 ## Technical Indicators
 
