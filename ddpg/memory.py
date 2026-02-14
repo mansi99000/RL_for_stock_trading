@@ -29,7 +29,7 @@ class ReplayBuffer:
 
     def store(self, state, next_state, action, reward, done):
         idx = (
-            self.buffer_capacity % self._buffer_idx
+            self._buffer_idx % self.buffer_capacity
             if self._buffer_idx != 0
             else 0
         )
